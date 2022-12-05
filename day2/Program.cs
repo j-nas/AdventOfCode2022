@@ -76,7 +76,18 @@ internal class Program
         }
         else if (desiredResult(game[2]) == 0)
         {
-            playerChoice = (opp % 3) + 1;
+            switch (opp)
+            {
+                case 0:
+                    playerChoice = 3;
+                    break;
+                case 1:
+                    playerChoice = 1;
+                    break;
+                case 2:
+                    playerChoice = 2;
+                    break;
+            }
 
         }
 

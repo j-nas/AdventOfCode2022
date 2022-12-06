@@ -11,14 +11,13 @@ internal class Program
 
     private static void Part2(string[] input)
     {
-
         int value = 0;
-
-        for (int i = 0; i < 300; i += 3)
+        for (int i = 0; i < input.Count(); i += 3)
         {
             string elf1 = input[i];
             string elf2 = input[i + 1];
             string elf3 = input[i + 2];
+
 
             foreach (char item in elf1)
             {
@@ -27,6 +26,7 @@ internal class Program
                     if (elf3.Contains(item))
                     {
                         value += GetValueOfItem(item);
+                        break;
                     }
                 }
             }

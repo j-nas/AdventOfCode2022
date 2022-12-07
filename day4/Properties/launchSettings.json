@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "day4": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\jonna\\Projects\\AdventOfCode2022\\day4"
+    }
+  }
+}

@@ -1,3 +1,4 @@
+
 import fs from 'fs'
 
 const input = fs.readFileSync('./day7/input.txt').toString().split('\n')
@@ -17,8 +18,14 @@ class Directory {
   addDir(dir: string) {
     this.dirs.push(new Directory(dir, this))
   }
-  totalSize() {
-    this.files.map(f => f)
+  sizeOfFiles() {
+    return this.files.reduce((acc, file) => acc + file.size, 0)
+  }
+  sizeOfDirs(): number {
+    return this.dirs.reduce((acc, dir) => acc + dir.totalSize(), 0)
+  }
+  totalSize(): number {
+    return this.sizeOfFiles() + this.sizeOfDirs()
   }
 
 }
@@ -44,8 +51,6 @@ function commandParser(
 ): void {
 
   if (!input[currentLine]) {
-    console.log('Finished parsing file. Results below:')
-    // displayResults()
     return
   }
   if (input[currentLine].startsWith('$ cd /')) {
@@ -53,27 +58,43 @@ function commandParser(
   }
   if (input[currentLine].startsWith('$ ls')) return commandParser(input, currentLine + 1, pwd)
   if (input[currentLine].startsWith('dir')) {
-    pwd.addDir(input[currentLine])
+    pwd.addDir(input[currentLine].split(' ')[1])
     return commandParser(input, currentLine + 1, pwd)
   }
   if (/^\d/.test(input[currentLine])) { //regex check if first char in string is a number
     pwd.addFile(input[currentLine])
+
     return commandParser(input, currentLine + 1, pwd)
   }
   if (input[currentLine].startsWith('$ cd ..')) {
     return commandParser(input, currentLine + 1, pwd.parent)
   }
   if (input[currentLine].startsWith('$ cd')) {
-    return commandParser(input, currentLine + 1, pwd.dirs.find(d => d.name === input[currentLine].split(' ')[1]))
+    return commandParser(input, currentLine + 1, pwd.dirs.find(d => d.name === input[currentLine].split(' ')[2]))
   }
 
-
 }
 
-function displayResults() {
-  throw new Error('Function not implemented.')
-}
+
 
 commandParser(input, 0, root)
 
-console.log(root) //?
+
+
+
+function sizeOfDirsUnderOneHundredKiloBytes(dir: Directory): number {
+  const dirs: Directory[] = []
+  function findDirectoriesUnderOneHundredKiloBytes(dir: Directory) {
+    if (dir.totalSize() <= 100000) {
+      dirs.push(dir)
+    }
+    dir.dirs.forEach(dir => findDirectoriesUnderOneHundredKiloBytes(dir))
+  }
+  findDirectoriesUnderOneHundredKiloBytes(dir)
+
+  return dirs.reduce((acc, dir) => acc + dir.totalSize(), 0)
+}
+
+
+
+console.log("Part 1 result: " + sizeOfDirsUnderOneHundredKiloBytes(root)) 

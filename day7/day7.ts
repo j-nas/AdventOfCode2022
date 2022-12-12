@@ -1,5 +1,5 @@
 
-import fs from 'fs'
+import fs, { Dir } from 'fs'
 
 const input = fs.readFileSync('./day7/input.txt').toString().split('\n')
 
@@ -95,6 +95,30 @@ function sizeOfDirsUnderOneHundredKiloBytes(dir: Directory): number {
   return dirs.reduce((acc, dir) => acc + dir.totalSize(), 0)
 }
 
+const capacity = 70000000
+const totalSize = root.totalSize()
+const freeSpace = capacity - totalSize //?
+const spaceRequired = 30000000
+const spaceToFree = spaceRequired - freeSpace //? 
+
+// find smallest directory to delete to free enough space required
+
+function findSmallestDir(dir: Directory): Directory {
+  let smallestDir: Directory[] = []
+
+  function insideRecursion(dir: Directory) {
+    if (dir.totalSize() >= spaceToFree) {
+      smallestDir.push(dir)
+    }
+    dir.dirs.forEach(dir => insideRecursion(dir))
+  }
+  insideRecursion(dir)
+  smallestDir = smallestDir.sort((a, b) => a.totalSize() - b.totalSize())
+  return smallestDir[0]
+}
 
 
-console.log("Part 1 result: " + sizeOfDirsUnderOneHundredKiloBytes(root)) 
+console.log(root.totalSize())
+
+console.log("Part 1 result: " + sizeOfDirsUnderOneHundredKiloBytes(root))
+console.log("Part 2 result: " + findSmallestDir(root).totalSize())
